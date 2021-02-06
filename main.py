@@ -52,7 +52,7 @@ new_tier_rating = [0, 30, 60, 90, 120, 150,
                    2700, 2800, 2850, 2900, 2950]
 
 new_tier = 30
-for i in range(31):
+for i in range(30):
     if new_rating >= new_tier_rating[i] and new_rating < new_tier_rating[i + 1]:
         new_tier = i
         break
