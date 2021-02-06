@@ -9,15 +9,14 @@ def levelName(level):
     return prefix[math.floor((level - 1) / 5)] + ' '  + roman[4 - (level - 1) % 5]
 
 # json data 만들기
-id = input('백준 ID를 입력하세요 : ')
+id = input('백준 ID를 입력하세요 : ').strip()
 req = requests.get('https://solved.ac/profile/' + id)
 soup = BeautifulSoup(req.text, 'html.parser')
 jsonData = json.loads(soup.find('script', {'type':'application/json'}).string)['props']['pageProps']
 
 # 현재 정보
 print('현재 경험치 :', jsonData['user']['result']['user'][0]['exp'])
-print('현재 티어 :', levelName(jsonData['user']['result']['user'][0]['level']))
-print()
+print('현재 티어 :', levelName(jsonData['user']['result']['user'][0]['level']), end='\n\n')
 
 # 상위 100개 문제 레이팅 계산
 cnt = 0
