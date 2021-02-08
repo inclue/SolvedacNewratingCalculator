@@ -9,10 +9,11 @@ def levelName(level):
     roman = ['I', 'II', 'III', 'IV', 'V']
     return prefix[math.floor((level - 1) / 5)] + ' ' + roman[4 - (level - 1) % 5]
 
-# json data API로 가져오기
+#아이디 입력 받기
 id = input('백준 아이디를 입력하세요 : ').strip()
 
 try:
+    # json data API로 가져오기
     res1 = request.urlopen(request.Request('https://api.solved.ac/v2/users/show.json?id=%s' % id))
     res2 = request.urlopen(request.Request('https://api.solved.ac/v2/users/problem_stats.json?id=%s' % id))
 
@@ -20,7 +21,7 @@ try:
     problem_stat = json.loads(res2.read().decode('UTF-8'))['result']
 
     # 현재 정보
-    print('현재 경험치 :', user_info['exp'])
+    print('현재 경험치 :', "{:,}".format(user_info['exp']))
     print('현재 티어 :', levelName(user_info['level']), end='\n\n')
 
     # 상위 100개 문제 레이팅 계산
@@ -39,13 +40,13 @@ try:
     classRatingInfo = [0, 25, 50, 100, 150, 200, 210, 220, 230, 240, 250]
 
     classRating = classRatingInfo[classInfo]
-    solvedRating = round(150 * (1 - pow(0.995, solvedInfo)))
-    voteRating = round(50 * (1 - pow(0.99, voteInfo)))
+    solvedRating = round(175 * (1 - pow(0.995, solvedInfo)))
+    voteRating = round(25 * (1 - pow(0.9, voteInfo)))
     new_rating += classRating + solvedRating + voteRating
 
     print('클래스 레이팅 :', classRating)
-    print('푼 문제 레이팅 :', solvedRating)
-    print('투표 문제 레이팅 :', voteRating)
+    print('문제 수 레이팅 :', solvedRating)
+    print('기여 레이팅 :', voteRating, end='\n\n')
 
     # 새로운 티어 계산
     new_tier_rating = [0, 30, 60, 90, 120, 150,
