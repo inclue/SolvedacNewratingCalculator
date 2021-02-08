@@ -1,5 +1,8 @@
+#-*- coding:utf-8 -*-
 import math
 import json
+import ssl
+
 from urllib import request
 
 def levelName(level):
@@ -9,20 +12,20 @@ def levelName(level):
     roman = ['I', 'II', 'III', 'IV', 'V']
     return prefix[math.floor((level - 1) / 5)] + ' ' + roman[4 - (level - 1) % 5]
 
-#아이디 입력 받기
-id = input('백준 아이디를 입력하세요 : ').strip()
+# json data API로 가져오기
+context = ssl._create_unverified_context()
 
+id = input('백준 아이디를 입력하세요 : ').strip()
 try:
-    # json data API로 가져오기
-    res1 = request.urlopen(request.Request('https://api.solved.ac/v2/users/show.json?id=%s' % id))
-    res2 = request.urlopen(request.Request('https://api.solved.ac/v2/users/problem_stats.json?id=%s' % id))
+    res1 = request.urlopen(request.Request('https://api.solved.ac/v2/users/show.json?id=%s' % id), context=context)
+    res2 = request.urlopen(request.Request('https://api.solved.ac/v2/users/problem_stats.json?id=%s' % id), context=context)
 
     user_info = json.loads(res1.read().decode('UTF-8'))['result']['user'][0]
     problem_stat = json.loads(res2.read().decode('UTF-8'))['result']
 
     # 현재 정보
-    print('현재 경험치 :', "{:,}".format(user_info['exp']))
-    print('현재 티어 :', levelName(user_info['level']), end='\n\n')
+    print('현재 경험치 :', user_info['exp'])
+    print(levelName(user_info['level']))
 
     # 상위 100개 문제 레이팅 계산
     cnt = 0
@@ -40,13 +43,13 @@ try:
     classRatingInfo = [0, 25, 50, 100, 150, 200, 210, 220, 230, 240, 250]
 
     classRating = classRatingInfo[classInfo]
-    solvedRating = round(175 * (1 - pow(0.995, solvedInfo)))
-    voteRating = round(25 * (1 - pow(0.9, voteInfo)))
+    solvedRating = round(150 * (1 - pow(0.995, solvedInfo)))
+    voteRating = round(50 * (1 - pow(0.99, voteInfo)))
     new_rating += classRating + solvedRating + voteRating
 
     print('클래스 레이팅 :', classRating)
-    print('문제 수 레이팅 :', solvedRating)
-    print('기여 레이팅 :', voteRating, end='\n\n')
+    print('푼 문제 레이팅 :', solvedRating)
+    print('투표 문제 레이팅 :', voteRating)
 
     # 새로운 티어 계산
     new_tier_rating = [0, 30, 60, 90, 120, 150,
@@ -63,5 +66,5 @@ try:
 
     print('새로운 레이팅 :', new_rating)
     print('새로운 티어 :', levelName(new_tier))
-except:
+except Exception as e:
     print('아이디를 찾을 수 없습니다. 아이디를 다시 한번 확인해주세요.')
