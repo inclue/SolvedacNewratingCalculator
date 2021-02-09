@@ -1,5 +1,8 @@
+#-*- coding:utf-8 -*-
 import math
 import json
+import ssl
+
 from urllib import request
 
 def levelName(level):
@@ -14,8 +17,9 @@ id = input('백준 아이디를 입력하세요 : ').strip()
 
 try:
     # json data API로 가져오기
-    res1 = request.urlopen(request.Request('https://api.solved.ac/v2/users/show.json?id=%s' % id))
-    res2 = request.urlopen(request.Request('https://api.solved.ac/v2/users/problem_stats.json?id=%s' % id))
+    context = ssl._create_unverified_context()
+    res1 = request.urlopen(request.Request('https://api.solved.ac/v2/users/show.json?id=%s' % id), context = context)
+    res2 = request.urlopen(request.Request('https://api.solved.ac/v2/users/problem_stats.json?id=%s' % id), context = context)
 
     user_info = json.loads(res1.read().decode('UTF-8'))['result']['user'][0]
     problem_stat = json.loads(res2.read().decode('UTF-8'))['result']
@@ -63,5 +67,6 @@ try:
 
     print('새로운 레이팅 :', new_rating)
     print('새로운 티어 :', levelName(new_tier))
-except:
+except Exception as e:
     print('아이디를 찾을 수 없습니다. 아이디를 다시 한번 확인해주세요.')
+    print(e)
