@@ -8,6 +8,8 @@ from urllib import request
 def levelName(level):
     if level == 0:
         return 'Unrated'
+    if level == 31:
+        return 'Master'
     prefix = ['Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Ruby']
     roman = ['I', 'II', 'III', 'IV', 'V']
     return prefix[math.floor((level - 1) / 5)] + ' ' + roman[4 - (level - 1) % 5]
@@ -58,9 +60,9 @@ try:
                        800, 950, 1100, 1250, 1400,
                        1600, 1750, 1900, 2000, 2100,
                        2200, 2300, 2400, 2500, 2600,
-                       2700, 2800, 2850, 2900, 2950]
-    new_tier = 30
-    for i in range(30):
+                       2700, 2800, 2850, 2900, 2950, 3000]
+    new_tier = 31
+    for i in range(31):
         if new_tier_rating[i] <= new_rating < new_tier_rating[i + 1]:
             new_tier = i
             break
